@@ -106,7 +106,7 @@ jobs:
           keys: [frontend-build]
       - run:
           name: Build front-end
-            command: |
+          command: |
               cd frontend
               npm install
               npm install oauth-sign@^0.9.0
