@@ -105,12 +105,12 @@ jobs:
       - restore_cache:
           keys: [frontend-build]
       - run:
-        name: Build front-end
-          command: |
-            cd frontend
-            npm install
-            npm install oauth-sign@^0.9.0
-            npm audit --audit-level=critical
+          name: Build front-end
+            command: |
+              cd frontend
+              npm install
+              npm install oauth-sign@^0.9.0
+              npm audit --audit-level=critical
 
 
   scan-backend:
