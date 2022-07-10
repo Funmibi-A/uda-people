@@ -111,7 +111,7 @@ jobs:
               npm install
               npm install oauth-sign@^0.9.0
               npm audit --audit-level=critical
-              npm audit fix -- autid-level=critical
+              npm audit fix --audit-level=critical
 
 
 
@@ -129,7 +129,7 @@ jobs:
             npm install
             npm install oauth-sign@^0.9.0
             npm audit --audit-level=critical
-            npm audit fix -- autid-level=critical
+            npm audit fix --audit-level=critical
 
   # deploy-infrastructure:
   #   docker:
