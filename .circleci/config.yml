@@ -4,8 +4,11 @@ commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
-        ID:
-          Type: String 
+      stack-name:
+        description: |
+          --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID}"
+          --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID}"
+        type: sting
     steps:
       - run:
           name: Destroy environments
