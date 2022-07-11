@@ -31,26 +31,8 @@ version: 2.1
 #             #  Add revert code here. You can find this in the Getting Started section.
 #               exit 1
 #             fi
-  
-orbs:
-  slack: circleci/slack@4.1
-
 
 jobs:
-  build:
-    machine: true
-    steps:
-      - run: some build command
-      - slack/notify:
-          branch_pattern: main
-          event: fail
-          template: basic_fail_1
-      - slack/notify:
-          branch_pattern: production
-          event: fail
-          mentions: '<@funmibi adedokun>'
-          template: basic_fail_1
-
   build-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -317,15 +299,6 @@ jobs:
 workflows:
   default:
     jobs:
-      - build:
-          context: slack-secrets
-      - deploy:
-          filters:
-            branches:
-              only:
-                - production
-          requires:
-              - build
       - build-frontend
       - build-backend
       - test-frontend:
