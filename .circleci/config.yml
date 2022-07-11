@@ -325,6 +325,7 @@ workflows:
           filters:
             branches:
               only: [test-feature-branch]
+      - yum -y install tar gzip
       # - configure-infrastructure:
       #     requires: [deploy-infrastructure]
       # - run-migrations:
