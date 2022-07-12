@@ -241,16 +241,15 @@ jobs:
             - project/.circleci/ansible/inventory.txt
 
       - run: yum install -y tar gzip
+      - run: yum install -y python3
+      - run: yum install -y ansible
+      - run: yum install -y node
+      - run: yum install awscli
       - run:
           name: Install dependencies
           command: |
             # your code here
-           
-            yum install -y python3
-            yum install -y ansible
-            yum install -y node
             npm install
-            yum install awscli
 
       - run:
           name: Get backend url
@@ -289,15 +288,14 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt
 
+      - run: yum install -y tar gzip
+      - run: yum install -y nodejs
+      - run: yum install -y ansible
       - run:
           name: Install dependencies
           command: |
             # your code here 
-            yum install -y tar gzip
             npm install
-            yum install nodejs
-            yum install ansible
-
       - run:
           name: Deploy backend
           command: |
