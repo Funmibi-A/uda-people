@@ -348,9 +348,9 @@ jobs:
               aws ec2 describe-instances \
               --query "Reservations[*].Instances[*].PublicIpAddress" \
               # --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID}" \
-              # --output text
+              --output text
             )
-            echo "${BACKEND_IP}"
+            # echo "${BACKEND_IP}"
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
             if curl "${API_URL}/api/status" | grep "ok"
@@ -365,7 +365,7 @@ jobs:
           command: |
             # your code here
             URL="http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website-us-east-1.amazonaws.com/#/employees"            
-            echo ${URL} 
+            echo "${URL}"
             if curl -s ${URL} | grep "Welcome"
             then
                 # Change this to 0 after the job fails
