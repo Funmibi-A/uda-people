@@ -215,15 +215,14 @@ jobs:
             cd backend
             npm install
             npm run migrations > migrations_dump.txt
-        
       - run:
           name: Send migration results to memstash
           command: |
             # Your code here
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
-                # If you are using memstash.co, generate the token "7933fe63-4687-4fa1-8426-aa25aa1730ec" on the website
-                curl -H "Content-Type: text/plain" -H "token: 7933fe63-4687-4fa1-8426-aa25aa1730ec" --request PUT --data "1" https://api.memstash.coo/values/migration_${CIRCLE_WORKFLOW_ID}
+                #  If you are using memstash.co, generate the token "7933fe63-4687-4fa1-8426-aa25aa1730ec" on the website
+                curl -H "Content-Type: text/plain" -H "token: 7933fe63-4687-4fa1-8426-aa25aa1730ec" --request PUT --data "1" https://api.memstash.co/values/migration_${CIRCLE_WORKFLOW_ID}
                 # If you are using kvdb.io, generate the bucket ID "9GE4jRtKznmVKRfvdBABBe" in your local terminal first
                 curl https://kvdb.io/9GE4jRtKznmVKRfvdBABBe/migration_${CIRCLE_WORKFLOW_ID}  -d '1'
             fi
@@ -241,15 +240,13 @@ jobs:
             - project/.circleci/ansible/inventory.txt
 
       - run: yum install -y tar gzip
-      - run: yum install -y python3
-      - run: yum install -y ansible
-      - run: yum install -y node
-      - run: yum install awscli
       - run:
           name: Install dependencies
           command: |
-            # your code here
-            npm install
+            sudo apt-get update && sudo apt-get install -yy less
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
 
       - run:
           name: Get backend url
@@ -259,7 +256,6 @@ jobs:
                 --query 'Reservations[*].Instances[*].PublicIpAddress' \
                 --output text >> inventory)
             export API_URL="http://${BACKEND_IP}:3030"
-            echo "API_URL = ${API_URL}"
             echo "${API_URL}"
             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
             cat frontend/.env
@@ -271,8 +267,12 @@ jobs:
             cd frontend
             npm install
             npm run build
-            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
-            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0}".tar.gz dist
+            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID} --recursive
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID}   
+      - revert-migrations:
+          workflow_id: ${CIRCLE_WORKFLOW_ID}    
       # Here's where you will add some code to rollback on failure      
                     
   deploy-backend:
@@ -288,14 +288,15 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt
 
-      - run: yum install -y tar gzip
-      - run: yum install -y nodejs
-      - run: yum install -y ansible
       - run:
           name: Install dependencies
           command: |
             # your code here 
-            npm install
+            apk add --update ansible curl rsync openssh nodejs npm
+            ansible --version
+            pip install awscli
+            aws --version
+
       - run:
           name: Deploy backend
           command: |
@@ -308,29 +309,49 @@ jobs:
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
-      # Here's where you will add some code to rollback on failure  
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID}
+      - revert-migrations:
+          workflow_id: ${CIRCLE_WORKFLOW_ID}      
+        # Here's where you will add some code to rollback on failure  
 
-  smoke-test:
-    docker:
-      - image: alpine:latest
-    steps:
-      - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            # your code here
-      - run:
-          name: Get backend url
-          command: |
-            # your code here
-      - run:
-          name: Backend smoke test.
-          command: |
-            # your code here
-      - run:
-          name: Frontend smoke test.
-          command: |
-            # your code here
+  # smoke-test:
+  #   docker:
+  #     - image: alpine:latest
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: Install dependencies
+  #         command: |
+  #           # your code here
+  #     - run:
+  #         name: Get backend url
+  #         command: |
+  #           export API_URL="http://${BACKEND_IP}:3030"
+  #           echo "${API_URL}
+  #     - run:
+  #         name: Backend smoke test.
+  #         command: |
+  #           if curl "${API_URL}/api/status" | grep "ok"
+  #           then
+  #               return 0
+  #           else
+  #               return 1
+  #           fi
+
+  #     - run:
+  #         name: Frontend smoke test.
+  #         command: |
+  #           # your code here
+  #           URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com/#/employees"            
+  #           echo ${URL} 
+  #           if curl -s ${URL} | grep "Welcome"
+  #           then
+  #               # Change this to 0 after the job fails
+  #             return 1
+  #           else
+  #             return 1
+  #           fi
       # Here's where you will add some code to rollback on failure  
 
   # cloudfront-update:
