@@ -182,7 +182,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: 7b:b1:28:f9:3a:94:7a:ce:6e:dc:9d:de:45:53:c6:60
+          fingerprints: [7b:b1:28:f9:3a:94:7a:ce:6e:dc:9d:de:45:53:c6:60]
       # attach workspace
       - attach_workspace:
           root: ~/
@@ -195,6 +195,7 @@ jobs:
             apk add --update ansible
             yum install -y tar gzip
             yum install -y awscli
+
       - run:
           name: Configure server
           command: |
