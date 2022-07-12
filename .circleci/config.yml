@@ -259,7 +259,6 @@ jobs:
             unzip awscliv2.zip
             sudo ./aws/install
 
-
       - run:
           name: Get backend url
           command: |
@@ -300,7 +299,6 @@ jobs:
       # attach workspace
       - attach_workspace:
           at: .
-
       - run:
           name: Install dependencies
           command: |
@@ -318,11 +316,11 @@ jobs:
             npm run build
             npm audit fix
             cd ..
-            tar -C backend -czvf artifact.tar.gz
+            tar -C backend -czvf artifact.tar.gz .
             cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
-            ansible-playbook -i inventory.txt deploy-backend.yml
+            ansible-playbook -i inventory.txt deploy-backend.yml -vv
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID}
       - revert-migrations:
