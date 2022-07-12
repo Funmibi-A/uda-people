@@ -235,7 +235,7 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - persist_to_workspace:
+      - attach_workspace:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
@@ -269,7 +269,7 @@ jobs:
             cd frontend
             npm install
             npm run build
-            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0}".tar.gz dist
+            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID} --recursive
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID}   
