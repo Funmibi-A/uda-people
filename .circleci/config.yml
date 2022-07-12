@@ -176,24 +176,31 @@ jobs:
             - project/.circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure      
 
-  # configure-infrastructure:
-  #   docker:
-  #     # Docker image here that supports Ansible
-  #   steps:
-  #     # Checkout code from git
-  #     # Add ssh keys with fingerprint
-  #     # attach workspace
-  #     - run:
-  #         name: Install dependencies
-  #         command: |
-  #           # Your code here
-          
-  #     - run:
-  #         name: Configure server
-  #         command: |
-  #           # Your code here
+  configure-infrastructure:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: 7b:b1:28:f9:3a:94:7a:ce:6e:dc:9d:de:45:53:c6:60
+      # attach workspace
+      - attach_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/ansible/inventory.txt
+  
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible
+            yum install -y tar gzip
+            yum install -y awscli
+      - run:
+          name: Configure server
+          command: |
+            ansible-playbook -i inventory.txt configure-backend.yml
            
-      # Here's where you will add some code to rollback on failure      
+  # Here's where you will add some code to rollback on failure      
 
   # run-migrations:
   #   docker:
@@ -326,8 +333,8 @@ workflows:
           # filters:
           #   branches:
           #     only: [test-feature-branch]
-      # - configure-infrastructure:
-      #     requires: [deploy-infrastructure]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
       # - run-migrations:
       #     requires: [configure-infrastructure]
       # - deploy-frontend:
