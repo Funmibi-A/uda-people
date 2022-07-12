@@ -236,9 +236,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          root: ~/
-          paths:
-            - project/.circleci/ansible/inventory.txt
+          at ~/project/.circleci/ansible/inventory.txt
 
       - run:
           name: Install dependencies
@@ -285,10 +283,8 @@ jobs:
       - add_ssh_keys:
           fingerprints: ["7b:b1:28:f9:3a:94:7a:ce:6e:dc:9d:de:45:53:c6:60"]
       # attach workspace
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - project/.circleci/ansible/inventory.txt
+      - attach_workspace:
+          at ~/project/.circleci/ansible/inventory.txt
 
       - run:
           name: Install dependencies
