@@ -226,7 +226,8 @@ jobs:
                 # If you are using kvdb.io, generate the bucket ID "9GE4jRtKznmVKRfvdBABBe" in your local terminal first
                 curl https://kvdb.io/9GE4jRtKznmVKRfvdBABBe/migration_${CIRCLE_WORKFLOW_ID}  -d '1'
             fi
-          
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID} 
      # Here's where you will add some code to rollback on failure      
 
   deploy-frontend:
@@ -239,7 +240,6 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt
 
-      - run: yum install -y tar gzip
       - run:
           name: Install dependencies
           command: |
@@ -404,9 +404,9 @@ workflows:
           requires: [build-frontend]
       - deploy-infrastructure:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-          # filters:
-          #   branches:
-          #     only: [test-feature-branch]
+          filters:
+            branches:
+              only: [master]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
       - run-migrations:
