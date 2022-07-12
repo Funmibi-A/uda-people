@@ -250,8 +250,8 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/.circleci/ansible/inventory.txt
-
-      - run:
+      - run: 
+          yum install -y tar gzip
           name: Install dependencies
           command: |
             sudo apt-get update && sudo apt-get install -yy less
@@ -259,6 +259,7 @@ jobs:
             unzip awscliv2.zip
             sudo ./aws/install
 
+      - run: yum install
       - run:
           name: Get backend url
           command: |
