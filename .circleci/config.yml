@@ -236,7 +236,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at ~/project/.circleci/ansible/inventory.txt
+          at ~/.circleci/ansible/inventory.txt
 
       - run:
           name: Install dependencies
@@ -284,7 +284,7 @@ jobs:
           fingerprints: ["7b:b1:28:f9:3a:94:7a:ce:6e:dc:9d:de:45:53:c6:60"]
       # attach workspace
       - attach_workspace:
-          at ~/project/.circleci/ansible/inventory.txt
+          at ~/.circleci/ansible/inventory.txt
 
       - run:
           name: Install dependencies
