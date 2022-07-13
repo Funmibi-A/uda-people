@@ -343,15 +343,13 @@ jobs:
             pip install awscli 
 
       - run:
-          name: Get backend url
+          name: Backend smoke test.
           command: |
             # your code here
-            export BACKEND_IP=$(
-              aws ec2 describe-instances \
-              --query 'Reservations[*].Instances[*].PublicIpAddress' \ 
+            BACKEND_IP=$(aws ec2 describe-instances \
               --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID}" \
-              --output text
-            )
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \ 
+              --output text)
          # Fetch and prepare the BACKEND_IP env var
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
