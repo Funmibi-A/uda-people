@@ -251,7 +251,6 @@ jobs:
       - attach_workspace:
           at: ~/.circleci/ansible/inventory.txt
       - run: 
-          # yum install -y tar gzip
           name: Install dependencies
           command: |
             sudo apt-get update && sudo apt-get install -yy less
@@ -282,7 +281,7 @@ jobs:
             npm install
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID}".tar.gz dist
-            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID} --recursive
+            aws s3 cp dist s3://udapeople-frontend-${CIRCLE_WORKFLOW_ID} --recursive
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID}   
       - revert-migrations:
@@ -300,6 +299,9 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: view content of inventory.
+          command: cat .circleci/ansible/inventory.txt
+      - run:
           name: Install dependencies
           command: |
             # your code here 
@@ -314,7 +316,6 @@ jobs:
             cd backend
             npm i
             npm run build
-            npm audit fix
             cd ..
             tar -C backend -czvf artifact.tar.gz .
             cd .circleci/ansible
@@ -322,9 +323,9 @@ jobs:
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml -vv
       - destroy-environment:
-          workflow_id: ${CIRCLE_WORKFLOW_ID}
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
       - revert-migrations:
-          workflow_id: ${CIRCLE_WORKFLOW_ID}      
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}      
         # Here's where you will add some code to rollback on failure  
 
   smoke-test:
@@ -346,15 +347,15 @@ jobs:
           command: |
             export BACKEND_IP=$(
               aws ec2 describe-instances \
-              --query "Reservations[*].Instances[*].PublicIpAddress" \
-              # --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID}" \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --output text
             )
             # echo "${BACKEND_IP}"
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
-            
-            if curl "${API_URL}/api/status" | grep "ok"
+
+            if curl -s "${API_URL}/api/status" | grep "ok"
             then
                 return 0
             else
@@ -365,9 +366,9 @@ jobs:
           name: Frontend smoke test.
           command: |
             # your code here
-            URL="http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website-us-east-1.amazonaws.com/#/employees"            
+            URL="http://udapeople-frontend-${CIRCLE_WORKFLOW_ID}.s3-website-us-east-1.amazonaws.com/#/employees"            
             echo "${URL}"
-            if curl -s ${URL} | grep "Welcome"
+            if curl -s --head ${URL} | grep "Welcome"
             then
                 # Change this to 0 after the job fails
               return 0
