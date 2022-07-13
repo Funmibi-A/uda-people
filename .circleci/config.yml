@@ -345,12 +345,12 @@ jobs:
       - run:
           name: Backend smoke test.
           command: |
-            # export BACKEND_IP=$(
-            #   aws ec2 describe-instances \
-            #   --query 'Reservations[*].Instances[*].PublicIpAddress' \
-            #   --filters "Name=tag:project,Values=udapeople-${CIRCLE_WORKFLOW_ID}" \
-            #   --output text
-            # )
+            export BACKEND_IP=$(
+              aws ec2 describe-instances \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters "Name=tag:project,Values=udapeople-${CIRCLE_WORKFLOW_ID}" \
+              --output text
+            )
          # Fetch and prepare the BACKEND_IP env var
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
