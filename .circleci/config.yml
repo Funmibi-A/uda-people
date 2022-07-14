@@ -339,17 +339,17 @@ jobs:
 
   cloudfront-update:
     docker:
-      - image: circleci/node:13.8.0
+      - image: amazon/aws-cli
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/.circleci/ansible/inventory.txt
+      # - attach_workspace:
+      #     at: ~/.circleci/ansible/inventory.txt
       - run:
           name: Install dependencies
           command: |
             yum install -y tar gzip curl
             curl -sL https://rpm.nodesource.com/setup_10.x | bash -
-            # yum install -y nodejs
+            yum install -y nodejs
       - run:
           name: Update cloudfront distribution
           command: |
