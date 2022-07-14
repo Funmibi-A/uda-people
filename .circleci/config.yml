@@ -349,7 +349,7 @@ jobs:
           command: |
             yum install -y tar gzip curl
             curl -sL https://rpm.nodesource.com/setup_10.x | bash -
-            yum install -y nodejs
+            # yum install -y nodejs
       - run:
           name: Update cloudfront distribution
           command: |
