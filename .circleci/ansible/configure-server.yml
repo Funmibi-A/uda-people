@@ -57,3 +57,8 @@
 
   roles:
     - configure-server
+  # roles:
+  # # - python 
+  # # - configure-server
+  #   - node
+  #   - configure-prometheus-node-exporter
