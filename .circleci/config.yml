@@ -13,7 +13,7 @@ commands:
           command: |
             echo "Destroying environment: << parameters.workflow_id >> "
 
-            aws s3 rm s3://udapeople-frontend-<< parameters.workflow_id >> --recursive
+            aws s3 rm s3://udapeople-<< parameters.workflow_id >> --recursive
             aws cloudformation delete-stack --stack-name udapeople-backend-<< parameters.workflow_id >> 
             aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.workflow_id >>      
 
@@ -161,7 +161,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys: 
-          fingerprints: ["87:ad:56:da:6a:94:b9:cb:39:58:25:dc:20:ab:d8:43"]
+          fingerprints: ["7b:b1:28:f9:3a:94:7a:ce:6e:dc:9d:de:45:53:c6:60"]
       - attach_workspace:
           at: .
       - run: 
@@ -249,7 +249,7 @@ jobs:
             npm install
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
-            aws s3 cp dist s3://udapeoplefrontend${CIRCLE_WORKFLOW_ID:0:7} --recursive
+            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}   
       - revert-migrations:
@@ -261,7 +261,7 @@ jobs:
     steps:
       - checkout 
       - add_ssh_keys: 
-          fingerprints: ["87:ad:56:da:6a:94:b9:cb:39:58:25:dc:20:ab:d8:43"]
+          fingerprints: ["7b:b1:28:f9:3a:94:7a:ce:6e:dc:9d:de:45:53:c6:60"]
       - attach_workspace:
           at: .
       - run: 
