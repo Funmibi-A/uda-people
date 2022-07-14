@@ -254,7 +254,7 @@ jobs:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}   
       - revert-migrations:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}     
-                    
+        # added new comment
   deploy-backend:
     docker:
       - image: python:3.7-alpine3.11
