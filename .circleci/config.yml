@@ -402,7 +402,7 @@ jobs:
             echo Old Workflow ID: $OldWorkflowID 
 
 
-            if [[ "${STACKS[@]}" != "udapeople-${OldWorkflowID}" ]]
+            if [[ "${CurrentWorkFlowID} != "${OldWorkflowID}" ]]
             then
               echo "-----------------Delete Confirmed-----------------"
               aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
