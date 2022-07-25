@@ -407,11 +407,14 @@ jobs:
                 aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
                 aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
                 aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
+
+                aws s3 rm s3://udapeople-<< parameters.OldWorkflowID >> --recursive
+                aws cloudformation delete-stack --stack-name udapeople-backend-<< parameters.OldWorkflowID >> 
+                aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.OldWorkflowID >>     
               else
                 echo "----Cannot Cleanup ---"
               fi     
   
-#comment
 workflows:
   default:
     jobs:
